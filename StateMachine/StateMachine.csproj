@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="6.1.0" />
+    <PackageReference Include="Appccelerate.StateMachine" Version="5.1.0" />
   </ItemGroup>
 
 </Project>
