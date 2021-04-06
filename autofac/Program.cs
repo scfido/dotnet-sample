@@ -11,7 +11,6 @@ namespace autofacDemo
       builder.RegisterType<Context>();
       builder.RegisterType<User>();
       var container = builder.Build();
-
       container.Resolve<User>();
 
       using var scope = container.BeginLifetimeScope("Scoped", builder =>
