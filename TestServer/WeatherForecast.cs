@@ -1,6 +1,6 @@
 using System;
 
-namespace TestHost
+namespace TestServer
 {
     public class WeatherForecast
     {

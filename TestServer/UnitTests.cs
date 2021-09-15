@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Hosting;
 using Xunit;
 
-namespace TestHost
+namespace TestServer
 {
     public class UnitTest1
     {
