@@ -3,14 +3,22 @@ using Autofac;
 
 namespace autofacDemo
 {
-  class User
-  {
-    public User(ILifetimeScope scope, Context context)
+    class User
     {
-      Console.WriteLine($"Name: {context.Name}");
-      Console.WriteLine($"Scope.Tag: {scope.Tag}");
-    }
+        ILifetimeScope scope;
+        Context context;
+        public User(ILifetimeScope scope, Context context)
+        {
+            this.scope = scope;
+            this.context = context;
+        }
 
-    public string Name { get; set; }
-  }
+        public ILogger Logger { get; set; }
+
+        public void Print()
+        {
+            Logger.Log($"Name: {context.Name}");
+            Logger.Log($"Scope.Tag: {scope.Tag}");
+        }
+    }
 }
