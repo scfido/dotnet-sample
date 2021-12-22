@@ -1,0 +1,9 @@
+root=true
+
+[*]
+indent_style=space
+
+[*.{cs}]
+charset = utf-8-bom
+indent_style=tabs
+csharp_style_namespace_declarations=file_scoped
