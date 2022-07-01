@@ -1,0 +1,26 @@
+#!csharp
+
+DateOnly date = DateOnly.FromDateTime(DateTime.Now);
+Console.WriteLine(date.DayNumber);
+
+#!markdown
+
+`6-23_738328.db` => 6-22 16:00 ~ 6-23 8:00    
+`6-22_738326.db` => 6-21 16:00 ~ 6-22 8:00 
+
+#!csharp
+
+using System.Text.Encodings.Web;
+using System.Text.Unicode;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+
+var jsonStr ="{\"a\":1,\"b\":{\"c\":\"中文\"}}";
+JsonNode node = JsonNode.Parse(jsonStr);
+var options = new JsonSerializerOptions(){
+    Encoder = JavaScriptEncoder.Create(UnicodeRanges.BasicLatin, UnicodeRanges.CjkUnifiedIdeographs),
+    WriteIndented = true
+};
+
+// Console.WriteLine(node["b"].ToJsonString());
+Console.WriteLine(node["b"]["c"].ToJsonString(options));
