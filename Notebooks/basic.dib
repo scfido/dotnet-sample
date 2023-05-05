@@ -1,3 +1,7 @@
+#!meta
+
+{"kernelInfo":{"defaultKernelName":"csharp","items":[{"aliases":["c#","cs"],"languageName":"C#","name":"csharp"},{"aliases":["f#","fs"],"languageName":"F#","name":"fsharp"},{"aliases":[],"languageName":"HTML","name":"html"},{"aliases":[],"languageName":"http","name":"httpRequest"},{"aliases":["js"],"languageName":"JavaScript","name":"javascript"},{"aliases":[],"languageName":"KQL","name":"kql"},{"aliases":[],"languageName":"Mermaid","name":"mermaid"},{"aliases":["powershell"],"languageName":"PowerShell","name":"pwsh"},{"aliases":[],"languageName":"SQL","name":"sql"},{"aliases":[],"name":"value"}]}}
+
 #!csharp
 
 DateOnly date = DateOnly.FromDateTime(DateTime.Now);
@@ -24,3 +28,48 @@ var options = new JsonSerializerOptions(){
 
 // Console.WriteLine(node["b"].ToJsonString());
 Console.WriteLine(node["b"]["c"].ToJsonString(options));
+
+#!csharp
+
+using System.Text.RegularExpressions;
+
+// 正则表达式测试
+Regex.IsMatch(@"abc\def", @"c\\[a-zA-Z]+$")
+
+#!csharp
+
+var text = "abc";
+Console.WriteLine(text[0]);
+
+#!csharp
+
+Console.WriteLine(DateTime.Now.ToString("yyyy-MM-ddThh:mm:ss.ffff zzzz"));
+
+#!csharp
+
+var time = DateTimeOffset.Parse("2023-02-02T03:20:16.4717 +08:00");
+Console.WriteLine(time);
+
+#!csharp
+
+var template ="/{a}/{b}";
+var value = string.Format(template, new {a = "a", b = "b"});
+Console.WriteLine(value);
+
+#!csharp
+
+var template ="/{a}/{b}";
+var value = string.Format(template, new {a = "a", b = "b"});
+Console.WriteLine(value);
+
+#!csharp
+
+var template ="/{a}/{b}";
+var value = string.Format(template, new {a = "a", b = "b"});
+Console.WriteLine(value);
+
+#!csharp
+
+var template ="/{a}/{b}";
+var value = string.Format(template, new {a = "a", b = "b"});
+Console.WriteLine(value);
