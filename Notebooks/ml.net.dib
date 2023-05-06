@@ -1,0 +1,20 @@
+#!meta
+
+{"kernelInfo":{"defaultKernelName":"csharp","items":[{"aliases":[],"name":"csharp"}]}}
+
+#!markdown
+
+第一步：引用 `Microsoft.ML` 包.
+
+#!csharp
+
+#r "nuget: Microsoft.ML, 3.0.0-preview.22621.2"
+
+#!markdown
+
+第二步： 引用`ML.NET` namespaces
+
+#!csharp
+
+using Microsoft.ML;
+using Microsoft.ML.Data;
