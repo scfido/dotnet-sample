@@ -1,0 +1,174 @@
+#!meta
+
+{"kernelInfo":{"defaultKernelName":"csharp","items":[{"aliases":[],"name":"csharp"}]}}
+
+#!markdown
+
+## 准备环境
+
+所有的.Net 库一样，接下来就是安装SK的nuget 包。由于是一个较新的包，所以更新变化会比较快。
+
+#!pwsh
+
+$env:OPENAI_API_KEY = "sk-*"
+
+#!csharp
+
+#r "nuget: Microsoft.SemanticKernel, 0.13.442.1-preview"
+
+#!markdown
+
+接下来进行应用内的准备工作，首先创建一个 kernel;
+
+#!csharp
+
+using Microsoft.SemanticKernel;
+var kernel = Kernel.Builder.Build();
+
+#!markdown
+
+然后配置基础模型，基础模型目前有四个：
+
+1. TextCompletion，最常用的GPT-3的模型，常用于文本生成
+2. ChatCompetion，GPT3.5模型，也就是所谓的ChatGPT的模型，基本就用于聊天功能
+3. EmbeddingGeneration，嵌入模型，这个将用于Memory的生成和搜索，在后期能力扩展时将会有极大的用途
+4. ImageGeneration，图形模型，也就是DALL-E模型，用于图片的生成
+由于Azure OpenAI提供了和Open AI相同的能力，所以以上的模型配置可以选择OpenAI的接口，也可以选择Azure OpenAI的接口，根据自己有哪个选哪个的原则使用。
+
+当然以上模型也提供了基本的接口定义，如果有自己的LLM AI接口的话，也可以自行实现相关接口，然后使用。
+
+这里以OpenAI的接口为例，继续进行学习。
+
+#!csharp
+
+// 简单的技能任务使用TextCompletion即可
+// 1. ServiceId 用于指定当前模型的配置，相同的模型不能有重复的ServiceId配置
+// 2. modelId 指定TextCompetion所使用的LLM 模型，目前基本为 text-davinci-003
+// 3. apikey OpenAI 接口调用需要使用的APIkey
+kernel.Config.AddOpenAITextCompletionService("text-davinci-003",Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+ 
+
+#!markdown
+
+## Semantic Function
+
+注册一个Semantic Function
+
+#!csharp
+
+using Microsoft.SemanticKernel.SemanticFunctions;
+ 
+// ⚠️ Semantic Function的核心就是prompt⚠️ 
+// 这里偷懒，使用Semantic Kernel官方样例库里面的的Summary Skill
+var prompt = 
+"""
+[SUMMARIZATION RULES]
+DONT WASTE WORDS
+USE SHORT, CLEAR, COMPLETE SENTENCES.
+DO NOT USE BULLET POINTS OR DASHES.
+USE ACTIVE VOICE.
+MAXIMIZE DETAIL, MEANING
+FOCUS ON THE CONTENT
+ 
+[BANNED PHRASES]
+This article
+This document
+This page
+This material
+[END LIST]
+ 
+Summarize:
+Hello how are you?
++++++
+Hello
+ 
+Summarize this
+{{$input}}
++++++
+""";
+// 使用扩展方法在Kernel上注册一个SemanticFunction 
+// prompt 是Semantic Function的核心，如何设计一个好的prompt是成功构建Semantic Function的关键所在，也是未来LLM AI 应用中的重要内容
+// PromptTemplateConfig 用于配置prompt 模板的相关参数
+// functionName 是自定义的功能名称[可选]
+// skillName 是自定义的技能名称[可选]
+var summaryFunction = kernel.CreateSemanticFunction(prompt,new PromptTemplateConfig());
+
+#!markdown
+
+执行Function
+
+#!csharp
+
+// 定义需要处理的输入
+var input = "据新加坡海峡时报报道，一名不愿透露姓名的妇女在一家奶茶店内看到一则印有而二维码的贴纸，上面鼓励顾客扫描二维码填写一份关于“免费奶茶”的调查问卷，随即通过扫码并在 Android 手机上下载了第三方软件填写调查问卷。当晚，等这名妇女就寝后，这个第三方软件就悄悄转走了其账户中的 2 万美元。 ";
+// 通过 Kernel 运行 function 
+var resultContext = await kernel.RunAsync(input,summaryFunction);
+// 输出结果
+resultContext.Result.Display();
+
+// output 
+// Multi-modal interfaces are becoming increasingly popular for app developers, combining different modes of input and output such as voice, touch, and visuals to create a more interactive and engaging user experience. Semantic Kernel can be used to create a multi-modal example.
+
+#!markdown
+
+以上就完成了一个简单的Semantic Function的使用。
+
+## Native Function
+声明一个Native Skill
+
+#!csharp
+
+using Microsoft.SemanticKernel.SkillDefinition;
+// 这里偷懒，使用Semantic Kernel CoreSkills中的 TextSkill
+public class TextSkill {
+	[SKFunction("Convert a string to uppercase.")]
+	public string Uppercase(string text)
+	{
+		return text.ToUpper(System.Globalization.CultureInfo.CurrentCulture);
+	}
+}
+
+#!markdown
+
+这里只需要对方法添加一个SKFunction的注释，就可以转变为一个SK的Native Function。
+
+注册Native Skill
+
+#!csharp
+
+// skillInstance 就是Native Skill的实例
+// skillName 自定义的技能名称 [可选]
+var textSkill = kernel.ImportSkill(new TextSkill(),nameof(TextSkill));
+
+#!markdown
+
+这里使用到的是一个Import，意味着导入了SkillInstance中所有的定义SKFunction。而Semantic Skill 也有一个对应的Import方法ImportSemanticSkillFromDirectory，可以从一个文件夹中导入所有技能。
+
+### 执行Function
+
+#!csharp
+
+// 注册Native Function 如何没有指定 SKFunctionName的话，都会是用方法声明的名称，使用nameof这种偷懒方法可以方便得从Skill集合中获取对应的Function
+var uppercaseFunction = textSkill[nameof(TextSkill.Uppercase)];
+// 通过 Kernel 运行 function
+var nativeResultContext = await kernel.RunAsync(input,uppercaseFunction);
+// 输出结果
+nativeResultContext.Result.Display();
+
+#!markdown
+
+ 以上就完成了一个简单的Native Function的使用。
+
+## 链式调用
+当完成了以上Skill和Function的准备之后，就可以想办法将多个Skill串联起来使用了，就像是命令行中的管道，函数式编程中的管道一样。
+
+#!csharp
+
+// kernel.RunAsync 本身就支持多个Function参数，并按照顺序依次执行
+var upperSummeryContext = await kernel.RunAsync(input, summaryFunction, uppercaseFunction);
+//  输出结果
+upperSummeryContext.Result.Display();
+
+#!markdown
+
+至此，一个简单的结合了LLM AI能力和原生代码能力的应用就构建成功了。

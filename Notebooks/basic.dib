@@ -73,3 +73,41 @@ Console.WriteLine(value);
 var template ="/{a}/{b}";
 var value = string.Format(template, new {a = "a", b = "b"});
 Console.WriteLine(value);
+
+#!csharp
+
+using System.Text.Json;
+
+public class User{
+
+    private string address;
+    public User(string name, int age, string address){
+        Name = name;
+        Age = age;
+        this.address = address;
+Address = address;
+        Console.WriteLine("构造函数");
+        Console.WriteLine($"Name:{Name}, Age:{Age}, Address:{Address}");
+    }
+
+    public string Name {get;set;}
+    public int Age {get;set;}
+    public string Address {get;set;}
+}
+
+var text = JsonSerializer.Serialize(new User("张三", 18, "北京"));
+Console.WriteLine(text);
+
+var user = JsonSerializer.Deserialize<User>(text);
+Console.WriteLine(user.Address);
+
+#!csharp
+
+using System;
+using System.Diagnostics;
+
+var processes = Process.GetProcesses();
+foreach (var process in processes)
+{
+    Console.WriteLine($"Process name: {process.ProcessName}, Process ID: {process.Id}");
+}

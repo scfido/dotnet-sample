@@ -1,0 +1,10 @@
+
+
+### 获取正常页面
+GET http://localhost:5000/
+
+### 获取JWT授权的API
+GET http://localhost:5000/api/users
+
+### 获取Cookie授权的API
+GET http://localhost:5000/api/users/name
