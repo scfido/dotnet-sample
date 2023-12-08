@@ -4,8 +4,14 @@
 
 #!csharp
 
+using System.IO;
+
 DateOnly date = DateOnly.FromDateTime(DateTime.Now);
 Console.WriteLine(date.DayNumber);
+
+Console.WriteLine("DirectorySeparatorChar: " + Path.DirectorySeparatorChar);
+Console.WriteLine("PathSeparator: " + Path.PathSeparator);
+Console.WriteLine("VolumeSeparatorChar: " + Path.VolumeSeparatorChar);
 
 #!markdown
 
